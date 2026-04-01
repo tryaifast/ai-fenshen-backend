@@ -1,6 +1,6 @@
 // 管理后台 JavaScript
-// Vercel API地址 - 自动检测当前域名
-const API_BASE = '/api';
+// Vercel API地址 - 使用相对路径
+const API_BASE = '';  // 直接请求 /api/xxx，vercel 会 rewrite 到 api/index.js
 
 // 状态管理
 let currentUser = null;

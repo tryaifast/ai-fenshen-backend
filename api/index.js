@@ -86,11 +86,8 @@ async function handler(req) {
   const fullUrl = `${protocol}://${host}${req.url}`;
   const url = new URL(fullUrl);
   
-  // Vercel 会把 /api/xxx 转发到这里
+  // 获取路径（vercel rewrites 后路径保持不变）
   let path = url.pathname;
-  if (path.startsWith('/api')) {
-    path = path.replace('/api', '') || '/';
-  }
   const method = req.method;
   
   console.log(`[${method}] ${path}`);
