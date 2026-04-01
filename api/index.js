@@ -86,9 +86,10 @@ async function handler(req) {
   const fullUrl = `${protocol}://${host}${req.url}`;
   const url = new URL(fullUrl);
   
-  // 获取路径并移除 /api 前缀
+  // 获取路径并移除 /api 前缀（可能重复）
   let path = url.pathname;
-  if (path.startsWith('/api')) {
+  // 处理 /api/api/xxx 这种情况
+  while (path.startsWith('/api')) {
     path = path.substring(4) || '/';
   }
   const method = req.method;
