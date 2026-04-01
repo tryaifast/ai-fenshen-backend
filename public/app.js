@@ -1,6 +1,6 @@
 // 管理后台 JavaScript
-// Vercel API地址
-const API_BASE = '/api';
+// Vercel API地址 - 使用相对路径，vercel.json 会把 /api/* 路由到 api/index.js
+const API_BASE = '';
 
 // 状态管理
 let currentUser = null;
