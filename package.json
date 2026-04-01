@@ -1,0 +1,14 @@
+{
+  "name": "ai-fenshen-backend",
+  "version": "1.0.0",
+  "description": "AI分身市场后端 - Vercel版本",
+  "main": "api/index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build needed'"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0"
+  }
+}
