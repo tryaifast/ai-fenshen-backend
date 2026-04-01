@@ -86,8 +86,11 @@ async function handler(req) {
   const fullUrl = `${protocol}://${host}${req.url}`;
   const url = new URL(fullUrl);
   
-  // 获取路径（vercel rewrites 后路径保持不变）
+  // 获取路径并移除 /api 前缀
   let path = url.pathname;
+  if (path.startsWith('/api')) {
+    path = path.substring(4) || '/';
+  }
   const method = req.method;
   
   console.log(`[${method}] ${path}`);
