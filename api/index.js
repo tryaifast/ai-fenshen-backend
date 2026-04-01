@@ -81,7 +81,11 @@ function error(message, statusCode = 500) {
 // ============= API 路由 =============
 async function handler(req) {
   const url = new URL(req.url);
-  const path = url.pathname.replace('/api', '') || '/';
+  // Vercel 会把 /api/xxx 转发到这里
+  let path = url.pathname;
+  if (path.startsWith('/api')) {
+    path = path.replace('/api', '') || '/';
+  }
   const method = req.method;
   
   console.log(`[${method}] ${path}`);
