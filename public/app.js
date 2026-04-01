@@ -1,9 +1,6 @@
 // 管理后台 JavaScript
-// CloudBase API地址 - 部署后需要替换为实际地址
-// 格式: https://<env-id>.service.tcloudbase.com/api
-const API_BASE = window.location.hostname.includes('tcloudbase.com') 
-  ? '/api' 
-  : 'https://ai-fenshen-backend-xxx.service.tcloudbase.com/api';
+// Vercel API地址 - 自动检测当前域名
+const API_BASE = '/api';
 
 // 状态管理
 let currentUser = null;
