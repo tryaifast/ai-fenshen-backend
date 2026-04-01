@@ -80,7 +80,12 @@ function error(message, statusCode = 500) {
 
 // ============= API 路由 =============
 async function handler(req) {
-  const url = new URL(req.url);
+  // Vercel req.url 是相对路径，需要构造完整 URL
+  const protocol = req.headers['x-forwarded-proto'] || 'https';
+  const host = req.headers.host || 'localhost';
+  const fullUrl = `${protocol}://${host}${req.url}`;
+  const url = new URL(fullUrl);
+  
   // Vercel 会把 /api/xxx 转发到这里
   let path = url.pathname;
   if (path.startsWith('/api')) {
