@@ -360,12 +360,17 @@ async function getStatsOverview() {
 }
 
 // ============= Vercel 入口 =============
-module.exports = (req, res) => {
-  handler(req).then(response => {
+module.exports = async (req, res) => {
+  try {
+    const response = await handler(req);
     res.status(response.status);
     response.headers.forEach((value, key) => {
       res.setHeader(key, value);
     });
-    response.text().then(text => res.send(text));
-  });
+    const text = await response.text();
+    res.send(text);
+  } catch (err) {
+    console.error('Handler error:', err);
+    res.status(500).json({ error: 'Internal Server Error', message: err.message });
+  }
 };
