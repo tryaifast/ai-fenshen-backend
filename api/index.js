@@ -372,7 +372,32 @@ async function getStatsOverview() {
 // ============= Vercel 入口 =============
 module.exports = async (req, res) => {
   try {
-    const response = await handler(req);
+    // Vercel req 需要包装成类似 fetch Request 的对象
+    const protocol = req.headers['x-forwarded-proto'] || 'https';
+    const host = req.headers.host || 'localhost';
+    const fullUrl = `${protocol}://${host}${req.url}`;
+    
+    // 构造 headers
+    const headers = new Map();
+    Object.entries(req.headers).forEach(([key, value]) => {
+      headers.set(key.toLowerCase(), value);
+    });
+    
+    // 构造 body
+    let body = null;
+    if (req.body && Object.keys(req.body).length > 0) {
+      body = JSON.stringify(req.body);
+    }
+    
+    // 构造 request-like 对象
+    const request = {
+      url: fullUrl,
+      method: req.method,
+      headers: req.headers,
+      json: async () => req.body || {}
+    };
+    
+    const response = await handler(request);
     res.status(response.status);
     response.headers.forEach((value, key) => {
       res.setHeader(key, value);
