@@ -148,6 +148,10 @@ async function handler(req) {
         if (method === 'GET') return await getStatsOverview();
         return error('方法不允许', 405);
       
+      case '/stats/trends':
+        if (method === 'GET') return await getStatsTrends();
+        return error('方法不允许', 405);
+      
       // 单个分身操作
       default:
         const avatarMatch = path.match(/^\/avatars\/(.+)$/);
@@ -368,6 +372,23 @@ async function getStatsOverview() {
     tasks: { total: db.tasks.size, today: 0 },
     applications: { pending: Array.from(db.applications.values()).filter(a => a.status === 'pending').length },
     revenue: { total: 0 }
+  });
+}
+
+async function getStatsTrends() {
+  // 生成最近7天的模拟数据
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    days.push(date.toISOString().split('T')[0]);
+  }
+  
+  return json({
+    dates: days,
+    tasks: days.map(() => Math.floor(Math.random() * 10)),
+    users: days.map(() => Math.floor(Math.random() * 5)),
+    revenue: days.map(() => Math.floor(Math.random() * 1000))
   });
 }
 
