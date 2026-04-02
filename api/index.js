@@ -80,15 +80,17 @@ function error(message, statusCode = 500) {
 
 // ============= API 路由 =============
 async function handler(req) {
-  // Vercel req.url 是相对路径，需要构造完整 URL
-  const protocol = req.headers['x-forwarded-proto'] || 'https';
-  const host = req.headers.host || 'localhost';
-  const fullUrl = `${protocol}://${host}${req.url}`;
-  const url = new URL(fullUrl);
+  // 从 URL 对象或字符串解析路径
+  let path = '/';
+  try {
+    const url = new URL(req.url);
+    path = url.pathname;
+  } catch {
+    // 如果 URL 解析失败，直接使用 req.url
+    path = req.url || '/';
+  }
   
   // 获取路径并移除 /api 前缀（可能重复）
-  let path = url.pathname;
-  // 处理 /api/api/xxx 这种情况
   while (path.startsWith('/api')) {
     path = path.substring(4) || '/';
   }
@@ -377,23 +379,11 @@ module.exports = async (req, res) => {
     const host = req.headers.host || 'localhost';
     const fullUrl = `${protocol}://${host}${req.url}`;
     
-    // 构造 headers
-    const headers = new Map();
-    Object.entries(req.headers).forEach(([key, value]) => {
-      headers.set(key.toLowerCase(), value);
-    });
-    
-    // 构造 body
-    let body = null;
-    if (req.body && Object.keys(req.body).length > 0) {
-      body = JSON.stringify(req.body);
-    }
-    
     // 构造 request-like 对象
     const request = {
       url: fullUrl,
       method: req.method,
-      headers: req.headers,
+      headers: req.headers,  // Vercel 已经提供了 headers 对象
       json: async () => req.body || {}
     };
     
